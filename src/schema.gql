@@ -12,6 +12,7 @@ type Comment {
 
 type Post {
   body: String!
+  comments: [Comment!]
   id: Int!
   title: String!
   userId: Int!

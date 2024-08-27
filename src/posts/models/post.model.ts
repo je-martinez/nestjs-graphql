@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Comment } from 'src/comments/models/comment.model';
 
 @ObjectType()
 export class Post {
@@ -10,4 +11,6 @@ export class Post {
   title: string;
   @Field({ nullable: false })
   body: string;
+  @Field(() => [Comment], { nullable: true, defaultValue: [] })
+  comments?: Comment[];
 }

@@ -1,5 +1,5 @@
 import { Args, Int, Query, Resolver } from '@nestjs/graphql';
-import { Comment } from './models/comment';
+import { Comment } from './models/comment.model';
 import { CommentsService } from './comments.service';
 
 @Resolver(() => Comment)

@@ -1,10 +1,21 @@
-import { Args, Int, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { CommentsService } from '../comments/comments.service';
 import { Post } from './models/post.model';
 import { PostsService } from './posts.service';
 
 @Resolver(() => Post)
 export class PostsResolver {
-  constructor(private postService: PostsService) {}
+  constructor(
+    private postService: PostsService,
+    private commentsService: CommentsService,
+  ) {}
 
   @Query(() => [Post])
   async posts() {
@@ -14,5 +25,10 @@ export class PostsResolver {
   @Query(() => Post)
   async post(@Args('id', { type: () => Int }) id: number) {
     return this.postService.findOneById(id);
+  }
+
+  @ResolveField(() => [Comment])
+  async comments(@Parent() post: Post) {
+    return this.commentsService.findAllByPostId(post.id);
   }
 }
