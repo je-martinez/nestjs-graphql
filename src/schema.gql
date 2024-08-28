@@ -3,24 +3,24 @@
 # ------------------------------------------------------
 
 type Comment {
-  body: String!
-  email: String!
+  postId: Int!
   id: Int!
   name: String!
-  postId: Int!
+  email: String!
+  body: String!
 }
 
 type Post {
-  body: String!
-  comments: [Comment!]
+  userId: Int!
   id: Int!
   title: String!
-  userId: Int!
+  body: String!
+  comments: [Comment!]
 }
 
 type Query {
-  comment(id: Int!): Comment!
   comments: [Comment!]!
-  post(id: Int!): Post!
+  comment(id: Int!): Comment!
   posts: [Post!]!
+  post(id: Int!): Post!
 }

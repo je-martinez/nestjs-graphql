@@ -1,20 +1,24 @@
 import {
   Args,
+  Context,
   Int,
   Parent,
   Query,
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { CommentsService } from '../comments/comments.service';
+//Use without DataLoader
+// import { CommentsService } from '../comments/comments.service';
 import { Post } from './models/post.model';
 import { PostsService } from './posts.service';
+import { AppDataLoaders } from 'src/types';
 
 @Resolver(() => Post)
 export class PostsResolver {
   constructor(
     private postService: PostsService,
-    private commentsService: CommentsService,
+    //Without DataLoader
+    // private commentsService: CommentsService,
   ) {}
 
   @Query(() => [Post])
@@ -28,7 +32,11 @@ export class PostsResolver {
   }
 
   @ResolveField(() => [Comment])
-  async comments(@Parent() post: Post) {
-    return this.commentsService.findAllByPostId(post.id);
+  async comments(
+    @Parent() post: Post,
+    @Context() { loaders }: { loaders: AppDataLoaders },
+  ) {
+    // return this.commentsService.findAllByPostId(post.id);
+    return loaders.comments.load(post.id) ?? [];
   }
 }

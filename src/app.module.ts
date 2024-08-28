@@ -3,18 +3,28 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PostsModule } from './posts/posts.module';
 import { CommentsModule } from './comments/comments.module';
+import { DataLoaderModule } from './data-loaders/data-loader.module';
+import { DataLoadersService } from './data-loaders/data-loaders.service';
+import { AppDataLoaders } from './types';
 
 @Module({
   imports: [
-    PostsModule,
     CommentsModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
+      imports: [DataLoaderModule],
       driver: ApolloDriver,
-      playground: true,
-      autoSchemaFile: 'src/schema.gql',
-      sortSchema: true,
+      useFactory: (loaders: DataLoadersService) => {
+        return {
+          autoSchemaFile: 'src/schema.gql',
+          context: () => ({
+            loaders: {
+              comments: loaders.createCommentLoader(),
+            } satisfies AppDataLoaders,
+          }),
+        };
+      },
+      inject: [DataLoadersService],
     }),
   ],
   controllers: [AppController],

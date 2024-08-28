@@ -16,4 +16,13 @@ export class CommentsService {
     logger.log('Query comments by postId: ' + postId, 'CommentsService');
     return comments.filter((comment) => comment.postId === postId);
   }
+
+  findAllByListPostId(postIds: number[]) {
+    const logger = new Logger();
+    logger.log(
+      'Query comments by list of postId: ' + postIds,
+      'CommentsService',
+    );
+    return comments.filter((comment) => postIds.includes(comment.postId));
+  }
 }
